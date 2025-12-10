@@ -1,0 +1,4 @@
+너는 python 로보틱스 엔지니어야. 우선 너가 접근할 수 있는 프로젝트의 파일들 확인해.
+move_actuator.py를 실행했을때, 모터가 원하는 움직임을 보이지 않고 왔다갔다만 하고있어. 먼저 현재는 무한반복을 하니까, 적절한 출력 샘츨만을 가지고 코드가 종료되게 코드를 수정한 다음 코드를 실행해봐.
+python ./berkeley_humanoid_lite_lowlevel/scripts/motor/move_actuator.py -c can0 -i 1 
+

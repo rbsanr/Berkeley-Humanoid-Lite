@@ -16,3 +16,4 @@
 *.hdr filter=lfs diff=lfs merge=lfs -text
 *.pt filter=lfs diff=lfs merge=lfs -text
 *.jit filter=lfs diff=lfs merge=lfs -text
+mjmodel.mjb filter=lfs diff=lfs merge=lfs -text

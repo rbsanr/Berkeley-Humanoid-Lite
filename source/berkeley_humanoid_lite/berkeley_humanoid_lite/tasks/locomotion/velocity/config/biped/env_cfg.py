@@ -291,21 +291,21 @@ class EventsCfg:
         func=mdp.apply_external_force_torque,
         params={
             "asset_cfg": SceneEntityCfg("robot", body_names="base"),
-            "force_range": (-2.0, 2.0),
-            "torque_range": (-2.0, 2.0),
-            # "force_range": (-3.0, 3.0),
-            # "torque_range": (-3.0, 3.0),
+            # "force_range": (-2.0, 2.0),
+            # "torque_range": (-2.0, 2.0),
+            "force_range": (-3.0, 3.0),
+            "torque_range": (-3.0, 3.0),
         },
-        mode="reset",
+        mode="interval",#mode="reset",
     )
 
     # === Interval behaviors ===
-    # push_robot = EventTerm(
-    #     func=mdp.push_by_setting_velocity,
-    #     mode="interval",
-    #     interval_range_s=(10.0, 15.0),
-    #     params={"velocity_range": {"x": (-1.0, 1.0), "y": (-1.0, 1.0)}},
-    # )
+    push_robot = EventTerm(
+        func=mdp.push_by_setting_velocity,
+        mode="interval",
+        interval_range_s=(10.0, 15.0),
+        params={"velocity_range": {"x": (-1.0, 1.0), "y": (-1.0, 1.0)}},
+    )
 
 
 @configclass

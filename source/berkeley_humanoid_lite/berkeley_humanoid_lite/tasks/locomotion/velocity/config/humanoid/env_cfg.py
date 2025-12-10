@@ -68,7 +68,7 @@ class ObservationsCfg:
         joint_vel = ObsTerm(
             func=mdp.joint_vel_rel,
             params={"asset_cfg": SceneEntityCfg("robot", joint_names=HUMANOID_LITE_JOINTS, preserve_order=True)},
-            noise=Unoise(n_min=-2.0, n_max=2.0),
+            noise=Unoise(n_min=-1.0, n_max=1.0),#noise=Unoise(n_min=-2.0, n_max=2.0),
         )
         actions = ObsTerm(func=mdp.last_action)
 
@@ -88,6 +88,7 @@ class ObservationsCfg:
     critic: CriticCfg = CriticCfg()
 
 
+
 @configclass
 class ActionsCfg:
     """Action specifications for the MDP."""
@@ -95,7 +96,7 @@ class ActionsCfg:
     joint_pos = mdp.JointPositionActionCfg(
         asset_name="robot",
         joint_names=HUMANOID_LITE_JOINTS,
-        scale=0.25,
+        scale=0.45, # 0.25 -> 0.3
         preserve_order=True,
         use_default_offset=True,
     )
@@ -115,14 +116,14 @@ class RewardsCfg:
     track_ang_vel_z_exp = RewTerm(
         func=mdp.track_ang_vel_z_world_exp,
         params={"command_name": "base_velocity", "std": 0.5},
-        weight=1.0,
+        weight=2.0,
     )
 
     # === Reward for basic behaviors ===
     # termination penalty
     termination_penalty = RewTerm(
         func=mdp.is_terminated,
-        weight=-10.0,
+        weight=-50.0,
     )
 
     # base motion smoothness
@@ -137,13 +138,13 @@ class RewardsCfg:
     # ensure the robot is standing upright
     flat_orientation_l2 = RewTerm(
         func=mdp.flat_orientation_l2,
-        weight=-1.0,
+        weight=-3.0, # Orientation Penalty -1.0 -> -2.0
     )
 
     # joint motion smoothness
     action_rate_l2 = RewTerm(
         func=mdp.action_rate_l2,
-        weight=-0.001,
+        weight=-0.001
     )
     dof_torques_l2 = RewTerm(
         func=mdp.joint_torques_l2,
@@ -157,7 +158,7 @@ class RewardsCfg:
     )
     dof_pos_limits = RewTerm(
         func=mdp.joint_pos_limits,
-        weight=-1.0,
+        weight=-1.0,#1.0
     )
 
     # === Reward for encouraging behaviors ===
@@ -169,7 +170,7 @@ class RewardsCfg:
             "sensor_cfg": SceneEntityCfg("contact_forces", body_names=".*_ankle_roll"),
             "threshold": 0.5,
         },
-        weight=2.0,
+        weight=0.01,
     )
     # penalize feet sliding on the ground to exploit physics sim inaccuracies
     feet_slide = RewTerm(
@@ -195,12 +196,12 @@ class RewardsCfg:
     joint_deviation_hip = RewTerm(
         func=mdp.joint_deviation_l1,
         params={"asset_cfg": SceneEntityCfg("robot", joint_names=[".*_hip_yaw_joint", ".*_hip_roll_joint"])},
-        weight=-1.0,
+        weight=-0.5 #-1.0,
     )
     joint_deviation_ankle_roll = RewTerm(
         func=mdp.joint_deviation_l1,
         params={"asset_cfg": SceneEntityCfg("robot", joint_names=[".*_ankle_roll_joint"])},
-        weight=-1.0,
+        weight=-0.5,#-1.0,
     )
     joint_deviation_shoulder = RewTerm(
         func=mdp.joint_deviation_l1,
@@ -224,7 +225,7 @@ class TerminationsCfg:
     )
     base_orientation = DoneTerm(
         func=mdp.bad_orientation,
-        params={"limit_angle": 0.78, "asset_cfg": SceneEntityCfg("robot", body_names="base")},
+        params={"limit_angle": 1.4, "asset_cfg": SceneEntityCfg("robot", body_names="base")}, # limit_angle 0.78 -> 1.2
     )
 
 
@@ -301,19 +302,19 @@ class EventsCfg:
         func=mdp.apply_external_force_torque,
         params={
             "asset_cfg": SceneEntityCfg("robot", body_names="base"),
-            "force_range": (-2.0, 2.0),
-            "torque_range": (-2.0, 2.0),
+            "force_range": (-3.0, 3.0),
+            "torque_range": (-3.0, 3.0),
         },
         mode="reset",
     )
 
     # === Interval behaviors ===
-    # push_robot = EventTerm(
-    #     func=mdp.push_by_setting_velocity,
-    #     params={"velocity_range": {"x": (-1.0, 1.0), "y": (-1.0, 1.0)}},
-    #     mode="interval",
-    #     interval_range_s=(10.0, 15.0),
-    # )
+    push_robot = EventTerm(
+        func=mdp.push_by_setting_velocity,
+        params={"velocity_range": {"x": (-0.8, 0.8), "y": (-0.8, 0.8)}},
+        mode="interval",
+        interval_range_s=(10.0, 15.0),
+    )
 
 
 @configclass

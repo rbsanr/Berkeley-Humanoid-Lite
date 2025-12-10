@@ -5,7 +5,7 @@ from isaaclab_rl.rsl_rl import RslRlOnPolicyRunnerCfg, RslRlPpoActorCriticCfg, R
 @configclass
 class BerkeleyHumanoidLitePPORunnerCfg(RslRlOnPolicyRunnerCfg):
     num_steps_per_env = 24
-    max_iterations = 6000
+    max_iterations = 20000
     save_interval = 100
     experiment_name = "humanoid"
     empirical_normalization = False
@@ -22,7 +22,7 @@ class BerkeleyHumanoidLitePPORunnerCfg(RslRlOnPolicyRunnerCfg):
         entropy_coef=0.008,
         num_learning_epochs=5,
         num_mini_batches=4,
-        learning_rate=1.0e-3,
+        learning_rate=1.0e-5,
         schedule="adaptive",
         gamma=0.99,
         lam=0.95,
